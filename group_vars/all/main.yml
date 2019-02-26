@@ -1,0 +1,16 @@
+---
+## Postgresql
+installpostgre: False
+postgres_pass: "{{ vault_postgres_pass }}"
+ldapbindpass_postgre: "{{ vault_ldap_postgre_pass }}"
+version_pkg: 11
+pg_version: 11
+pgsql_backup_enable: False
+
+name_os: Linux
+arch_os: x86_64
+DATA_SOURCE_NAME_pgsql: "-e DATA_SOURCE_NAME=postgresql://postgres:{{ postgres_pass }}@{{ ansible_fqdn }}:5432/?sslmode=disable"
+
+firewalld_disabled: True
+
+install_haproxy: false

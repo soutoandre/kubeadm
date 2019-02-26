@@ -1,0 +1,12 @@
+---
+- name: haproxy| installing
+  include: install.yml
+  when: install_haproxy
+  tags:
+    - haproxy
+
+#- name: node_exporter | setup
+# include: setup.yml
+#  tags:
+#    - node_exporter
+

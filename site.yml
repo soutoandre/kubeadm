@@ -1,0 +1,24 @@
+---
+- name: Haproxy
+  hosts: "haproxy"
+  remote_user: ansible
+  roles:
+    - haproxy
+  tags:
+    - haproxy
+
+- name: delivery certs
+  hosts: [ haproxy, master, worker ]
+  remote_user: ansible
+  roles:
+    - cert
+  tags:
+    - cert
+
+- name: delivery  docker
+  hosts: [  master, worker ]
+  remote_user: ansible
+  roles:
+    - docker
+  tags:
+    - docker

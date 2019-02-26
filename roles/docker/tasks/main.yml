@@ -1,0 +1,77 @@
+---
+#- name: docker |remove repo
+#  file: path=/etc/apt/sources.list.d/download_docker_com_linux_ubuntu.list state=absent
+#  tags:
+#    - docker
+
+- name: docker | install repo
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+    state: present
+  tags:
+    - docker
+
+- name: docker | docker repository key
+  apt_key: 
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+  tags:
+    - docker
+
+
+- name: docker | google key kubernetes
+  apt_key:
+    url:  https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+  tags:
+    - docker
+
+- name: docker | install repo google kubernetes
+  apt_repository:
+    repo: deb http://apt.kubernetes.io kubernetes-xenial main
+    state: present
+  tags:
+    - docker
+
+
+- name: Update and upgrade apt packages
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - docker
+
+- name:  Install docker-ce
+  apt: name={{ item }}  state=present
+  with_items:
+    - lvm2
+    - docker-ce=5:18.09.2~3-0~ubuntu-xenial
+    - kubelet
+    - kubeadm
+    - kubectl
+  tags:
+    - docker
+
+- name:  Start | Enable
+  service: name=docker  state=started enabled=yes
+  tags:
+    - docker
+
+- name: Docker | disable swap
+  shell:
+       >
+       sed -i '/ swap / s/^/#/' /etc/fstab; swapoff -a 
+
+
+
+#- name: Create Docker directory proxy
+#  file: path=/etc/systemd/system/docker.service.d state=directory
+#  tags:
+#   - docker
+
+#- name: Conf proxy to docker
+#  template: src=http-proxy.conf.j2 dest=/etc/systemd/system/docker.service.d/http-proxy.conf owner=root group=root  mode=640
+#  notify: reload systemd
+#  tags: 
+#   - docker
